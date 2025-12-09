@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import VoiceService from '../services/api';
 import { useAuth } from '../components/AuthContext';
 import { UserEdit, AdminAnalytics } from '../types';
-import { Users, ChevronRight, ArrowLeft, Search, CheckCircle, XCircle, AlertTriangle, User, Calendar, Activity } from 'lucide-react';
+import { Users, ChevronRight, ArrowLeft, Search, CheckCircle, Activity, Flag } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 // Type for the user summary from analytics
@@ -25,7 +25,7 @@ const AdminPanel: React.FC = () => {
   // Fetch Analytics on mount
   useEffect(() => {
     fetchAnalytics();
-  }, []);
+  }, [user]);
 
   const fetchAnalytics = async () => {
     setLoading(true);
@@ -233,7 +233,7 @@ const AdminPanel: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-3">
                                         {edit.selected_flag && edit.selected_flag !== 'NONE' ? (
-                                            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">{edit.selected_flag}</span>
+                                            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold flex items-center w-fit gap-1"><Flag size={10}/> {edit.selected_flag}</span>
                                         ) : (
                                             <span className="text-xs text-gray-400">-</span>
                                         )}

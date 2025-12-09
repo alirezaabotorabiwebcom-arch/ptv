@@ -34,9 +34,10 @@ const Layout: React.FC = () => {
             .then(setStats)
             .catch(err => console.error("Failed to load stats for layout", err));
     }
-  }, [user, location.pathname]); // Re-fetch on route change to update progress bar
+  }, [user, location.pathname]); 
 
   const handleLogout = () => {
+    localStorage.removeItem('vtg_active_task'); // Clear saved task on logout
     logout();
     navigate('/login');
   };
@@ -47,17 +48,15 @@ const Layout: React.FC = () => {
   };
 
   // Progress Bar Calculations
-  const radius = 20; // Slightly larger for better visibility
+  const radius = 20; 
   const circumference = 2 * Math.PI * radius;
   const dailyLimit = stats?.daily_limit || 50;
   const todayCount = stats?.today_edits || 0;
-  // Cap percent at 100
   const percent = Math.min((todayCount / dailyLimit) * 100, 100);
   const offset = circumference - (percent / 100) * circumference;
   
-  // Color logic for the progress ring
   const isCapped = todayCount >= dailyLimit;
-  const progressColor = isCapped ? '#10B981' : '#4F46E5'; // Green if done, Indigo if in progress
+  const progressColor = isCapped ? '#10B981' : '#4F46E5'; 
 
   if (!user) return null;
 

@@ -96,6 +96,15 @@ const TaskRoom: React.FC = () => {
 
   const getFullText = () => chars.map(c => c.letter + (c.diacritic || '')).join('');
 
+  // Save task to storage
+  const persistTask = (task: VoiceTask) => {
+      localStorage.setItem('vtg_active_task', JSON.stringify(task));
+  };
+  
+  const clearPersistedTask = () => {
+      localStorage.removeItem('vtg_active_task');
+  };
+
   const loadTask = async (requestMore = false) => {
     if (!user) return;
     setTaskStatus('loading');
@@ -104,18 +113,44 @@ const TaskRoom: React.FC = () => {
     setIsPlaying(false);
     setErrorMessage('');
     
+    // Check for persisted task FIRST (unless we explicitly requested more)
+    if (!requestMore) {
+        const savedTaskStr = localStorage.getItem('vtg_active_task');
+        if (savedTaskStr) {
+            try {
+                const savedTask = JSON.parse(savedTaskStr);
+                // Validate if it has valid data
+                if (savedTask && savedTask.id) {
+                    setTaskStatus('active');
+                    setCurrentTask(savedTask);
+                    setReviewMode(savedTask.is_review_mode || false);
+                    setChars(parseTextToChars(savedTask.word));
+                    setSelectedIndex(0);
+                    return; // EXIT EARLY, do not fetch
+                }
+            } catch (e) {
+                console.error("Invalid saved task", e);
+                clearPersistedTask();
+            }
+        }
+    }
+
+    // Fetch from API
     try {
       const response = await VoiceService.getNextTask(user.id, requestMore);
       
       if (response.status === 'no_tasks') {
           setTaskStatus('no_tasks');
           setCurrentTask(null);
+          clearPersistedTask();
       } else if (response.status === 'limit_reached') {
           setTaskStatus('limit_reached');
           setCurrentTask(null);
+          clearPersistedTask();
       } else if (response.task) {
           setTaskStatus('active');
           setCurrentTask(response.task);
+          persistTask(response.task); // Save to storage
           
           const isReview = response.task.is_review_mode || false;
           setReviewMode(isReview);
@@ -132,6 +167,8 @@ const TaskRoom: React.FC = () => {
   };
 
   useEffect(() => {
+    // Only load if we haven't already loaded (to prevent double fetch in strict mode)
+    // But since we have persistence check inside loadTask, it is safe to call.
     if (user) loadTask();
   }, [user]);
 
@@ -212,11 +249,13 @@ const TaskRoom: React.FC = () => {
         setMessage({ type: 'success', text: t('saved') });
         setIsSubmitted(true);
         setShowReportModal(false);
+        clearPersistedTask(); // Clear saved task on success
         triggerConfetti(); 
         
         // Auto Advance
         setTimeout(() => {
-          loadTask();
+          // Pass true to bypass persistence check and fetch NEW task
+          loadTask(true); 
         }, 1500);
 
     } catch (error) {
@@ -224,7 +263,10 @@ const TaskRoom: React.FC = () => {
     }
   };
 
-  const handleNextTask = () => loadTask();
+  const handleNextTask = () => {
+      clearPersistedTask(); // Clear current so we fetch next
+      loadTask(true);
+  };
 
   if (taskStatus === 'loading') {
     return (
@@ -242,7 +284,7 @@ const TaskRoom: React.FC = () => {
                <WifiOff size={40} className="mx-auto text-red-500 mb-4" />
                <h3 className="text-xl font-bold mb-2 text-red-600 dark:text-red-400">Connection Error</h3>
                <p className="text-gray-600 dark:text-gray-300 mb-6 text-sm">{errorMessage}</p>
-               <button onClick={() => loadTask()} className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+               <button onClick={() => loadTask(true)} className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                   Retry
                </button>
            </div>
@@ -276,7 +318,7 @@ const TaskRoom: React.FC = () => {
         <h3 className="text-xl font-medium mb-2">{t('no_tasks')}</h3>
         <p className="text-sm text-gray-400 mb-6 max-w-xs">There are no new voice tasks available in the queue right now.</p>
         <div className="flex gap-3">
-          <button onClick={() => loadTask()} className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-slate-700 rounded-lg hover:bg-gray-300 transition-colors">
+          <button onClick={() => loadTask(true)} className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-slate-700 rounded-lg hover:bg-gray-300 transition-colors">
             <RefreshCw size={16}/> {t('check_again')}
           </button>
         </div>
