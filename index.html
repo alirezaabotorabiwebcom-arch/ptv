@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Text Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+      @font-face {
+        font-family: 'Dana';
+        src: url('/DanaFaNum-Medium.woff') format('woff');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      /* Custom scrollbar for webkit */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Enable class-based dark mode
+        theme: {
+          extend: {
+            colors: {
+              primary: '#4F46E5', // Indigo 600
+              secondary: '#6366F1', // Indigo 500
+              success: '#22C55E',
+              warning: '#FBBF24',
+              error: '#EF4444',
+              dark: {
+                bg: '#0F172A',
+                card: '#1E293B',
+                text: '#F1F5F9'
+              }
+            },
+            fontFamily: {
+              sans: ['Dana', 'Vazirmatn', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              arabic: ['Dana', 'Amiri', 'serif'] 
+            }
+          }
+        }
+      }
+    </script>
+    
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.10.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "axios": "https://aistudiocdn.com/axios@^1.6.0",
+    "i18next": "https://aistudiocdn.com/i18next@^23.7.11",
+    "react-i18next": "https://aistudiocdn.com/react-i18next@^13.5.0",
+    "i18next-browser-languagedetector": "https://aistudiocdn.com/i18next-browser-languagedetector@^7.2.0",
+    "canvas-confetti": "https://aistudiocdn.com/canvas-confetti@^1.9.2"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-gray-100 antialiased font-sans transition-colors duration-200">
+    <div id="root"></div>
+  </body>
+</html>
