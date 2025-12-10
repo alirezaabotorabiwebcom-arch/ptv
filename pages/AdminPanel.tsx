@@ -8,6 +8,10 @@ import { useTranslation } from 'react-i18next';
 // Type for the user summary from analytics
 type AnalyticsUser = AdminAnalytics['users_performance'][0];
 
+/**
+ * Admin panel component for managing users and viewing analytics.
+ * @returns {JSX.Element} The admin panel component.
+ */
 const AdminPanel: React.FC = () => {
   const { user } = useAuth();
   const { t, i18n } = useTranslation();

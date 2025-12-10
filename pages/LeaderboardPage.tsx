@@ -11,6 +11,10 @@ interface LeaderboardEntry {
   edits?: number;
 }
 
+/**
+ * Leaderboard page component for displaying top-ranked users.
+ * @returns {JSX.Element} The leaderboard page component.
+ */
 const LeaderboardPage: React.FC = () => {
   const { user } = useAuth();
   const { t } = useTranslation();

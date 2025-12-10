@@ -7,6 +7,10 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { Trophy, Activity, CheckCircle, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
+/**
+ * Dashboard component for displaying user statistics and recent activity.
+ * @returns {JSX.Element} The dashboard component.
+ */
 const Dashboard: React.FC = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();

@@ -28,6 +28,10 @@ interface WordGroup {
   chars: CharData[];
 }
 
+/**
+ * Task room component for transcribing voice tasks.
+ * @returns {JSX.Element} The task room component.
+ */
 const TaskRoom: React.FC = () => {
   const [searchParams] = useSearchParams();
   const taskIdParam = searchParams.get('id');

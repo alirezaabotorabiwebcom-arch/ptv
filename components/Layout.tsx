@@ -17,6 +17,11 @@ import {
   Globe
 } from 'lucide-react';
 
+/**
+ * Main layout component for the application.
+ * Renders the sidebar, header, and main content area.
+ * @returns {JSX.Element | null} The layout component, or null if no user is authenticated.
+ */
 const Layout: React.FC = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
