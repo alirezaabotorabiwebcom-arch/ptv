@@ -4,6 +4,11 @@ import { useAuth } from '../components/AuthContext';
 import { UserEdit, VoiceFlag } from '../types';
 import { CheckCircle, Clock, Download, AlertTriangle, Music, Users } from 'lucide-react';
 
+/**
+ * @component Profile
+ * @description The user profile page, which displays the user's information and edit history.
+ * @returns {JSX.Element | null} The rendered component, or null if no user is authenticated.
+ */
 const Profile: React.FC = () => {
   const { user } = useAuth();
   const [edits, setEdits] = useState<UserEdit[]>([]);

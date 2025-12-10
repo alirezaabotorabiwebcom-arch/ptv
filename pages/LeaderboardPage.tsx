@@ -11,6 +11,11 @@ interface LeaderboardEntry {
   edits?: number;
 }
 
+/**
+ * @component LeaderboardPage
+ * @description The leaderboard page, which displays a ranked list of users by score.
+ * @returns {JSX.Element} The rendered component.
+ */
 const LeaderboardPage: React.FC = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
