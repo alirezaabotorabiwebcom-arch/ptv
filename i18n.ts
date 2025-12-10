@@ -1,7 +1,18 @@
+/**
+ * @file This file configures the internationalization (i18n) settings for the application using the i18next library.
+ * It includes language resources, initialization options, and dynamic language-based adjustments to the DOM.
+ */
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+/**
+ * Contains the translation resources for the application.
+ * The keys represent language codes (e.g., 'en' for English, 'fa' for Farsi),
+ * and the values are objects containing the translation strings.
+ * @type {{ [key: string]: { translation: { [key: string]: string } } }}
+ */
 const resources = {
   en: {
     translation: {
@@ -141,6 +152,11 @@ i18n
     },
   });
 
+/**
+ * Event listener for language changes.
+ * Updates the document's language, direction (RTL/LTR), and body class for font adjustments.
+ * @param {string} lng - The new language code.
+ */
 // Handle RTL direction change
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
@@ -152,6 +168,10 @@ i18n.on('languageChanged', (lng) => {
   }
 });
 
+/**
+ * Initial setup for the default language (Farsi).
+ * Sets the document's language, direction, and body class.
+ */
 // Initial Setup
 document.documentElement.lang = 'fa';
 document.dir = 'rtl';

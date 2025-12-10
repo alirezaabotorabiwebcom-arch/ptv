@@ -10,6 +10,10 @@ const DEFAULT_API_URL = config.API_BASE_URL;
 const SAVED_API_URL = localStorage.getItem('vtg_api_url');
 const API_URL = SAVED_API_URL || DEFAULT_API_URL;
 
+/**
+ * Axios instance for making API requests.
+ * Configured with the base URL and necessary headers.
+ */
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -19,6 +23,10 @@ const api = axios.create({
   timeout: 10000, 
 });
 
+/**
+ * Sets the API URL in local storage and reloads the page.
+ * @param {string} url - The new API URL.
+ */
 export const setApiUrl = (url: string) => {
   let cleanUrl = url.trim();
   if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
@@ -29,12 +37,26 @@ export const setApiUrl = (url: string) => {
   window.location.reload(); 
 };
 
+/**
+ * Gets the current API URL.
+ * @returns {string} The current API URL.
+ */
 export const getApiUrl = () => API_URL;
 
+/**
+ * Checks for a mixed content error, which occurs when an HTTPS page
+ * tries to load content from an HTTP source.
+ * @returns {boolean} True if a mixed content error is detected, false otherwise.
+ */
 export const isMixedContentError = () => {
   return window.location.protocol === 'https:' && API_URL.startsWith('http:');
 };
 
+/**
+ * Formats the URL for a voice file, handling different environments.
+ * @param {string} path - The path to the voice file.
+ * @returns {string} The formatted URL.
+ */
 // Helper for MinIO URLs
 const formatVoiceUrl = (path: string) => {
     if (!path) return '';
@@ -56,22 +78,40 @@ const formatVoiceUrl = (path: string) => {
     return `${protocol}//${host}:9000/${path.replace(/^\//, '')}`;
 };
 
+/**
+ * Service object for interacting with the voice API.
+ */
 export const VoiceService = {
 
   // -------------------------
   // Auth
   // -------------------------
 
+  /**
+   * Registers a new user.
+   * @param {RegisterData} data - The user's registration data.
+   * @returns {Promise<any>} The response from the server.
+   */
   async register(data: RegisterData) {
     const response = await api.post("/users/auth/register", data);
     return response.data;
   },
 
+  /**
+   * Logs in a user.
+   * @param {LoginData} data - The user's login credentials.
+   * @returns {Promise<LoginResponse>} The login response from the server.
+   */
   async loginUser(data: LoginData): Promise<LoginResponse> {
     const response = await api.post("/users/auth/login", data);
     return { ...response.data, role: 'USER' };
   },
 
+  /**
+   * Logs in an admin.
+   * @param {LoginData} data - The admin's login credentials.
+   * @returns {Promise<LoginResponse>} The login response from the server.
+   */
   async loginAdmin(data: LoginData): Promise<LoginResponse> {
     const response = await api.post("/admin/auth/login", data);
     // Backend returns 'admin_id', map it to standard 'user_id' for frontend compatibility
@@ -82,6 +122,14 @@ export const VoiceService = {
     };
   },
 
+  /**
+   * Updates a user's profile information.
+   * @param {number} user_id - The ID of the user to update.
+   * @param {string} first_name - The user's new first name.
+   * @param {string} last_name - The user's new last name.
+   * @param {string} [password] - The user's new password (optional).
+   * @returns {Promise<any>} The response from the server.
+   */
   async updateUser(user_id: number, first_name: string, last_name: string, password?: string) {
     const data: any = { first_name, last_name };
     if (password) {
@@ -95,6 +143,12 @@ export const VoiceService = {
   // Tasks
   // -------------------------
 
+  /**
+   * Gets the next available task for a user.
+   * @param {number} user_id - The ID of the user.
+   * @param {boolean} [requestMore=false] - Flag to request more tasks if the limit is reached.
+   * @returns {Promise<TaskResponse>} The task response from the server.
+   */
   async getNextTask(user_id: number, requestMore: boolean = false): Promise<TaskResponse> {
     try {
       const response = await api.get<TaskResponse>("/users/tasks/next", {
@@ -116,6 +170,14 @@ export const VoiceService = {
     }
   },
 
+  /**
+   * Submits an edit for a task.
+   * @param {number} user_id - The ID of the user.
+   * @param {number} task_id - The ID of the task.
+   * @param {string} word - The edited word.
+   * @param {VoiceFlag} [flag=VoiceFlag.NONE] - An optional flag for the task.
+   * @returns {Promise<any>} The response from the server.
+   */
   async submitEdit(user_id: number, task_id: number, word: string, flag: VoiceFlag = VoiceFlag.NONE) {
     const payload = {
       user_id: user_id,
@@ -127,6 +189,11 @@ export const VoiceService = {
     return response.data;
   },
 
+  /**
+   * Gets a user's edit history.
+   * @param {number} user_id - The ID of the user.
+   * @returns {Promise<UserEdit[]>} A list of the user's edits.
+   */
   async getMyHistory(user_id: number): Promise<UserEdit[]> {
     const response = await api.get<UserEdit[]>(`/users/history/${user_id}`);
     return response.data;
@@ -136,6 +203,12 @@ export const VoiceService = {
   // Admin & Analytics
   // -------------------------
   
+  /**
+   * Gets a list of tasks for the admin panel.
+   * @param {number} [skip=0] - The number of tasks to skip (for pagination).
+   * @param {number} [take=10] - The number of tasks to take (for pagination).
+   * @returns {Promise<VoiceTask[]>} A list of tasks.
+   */
   async getTasks(skip: number = 0, take: number = 10): Promise<VoiceTask[]> {
     try {
         const response = await api.get<VoiceTask[]>("/admin/reports/all-edits", { params: { skip, take, admin_id: 1 } });
@@ -148,6 +221,12 @@ export const VoiceService = {
     }
   },
 
+  /**
+   * Gets analytics data for the admin panel.
+   * @param {number} admin_id - The ID of the admin.
+   * @param {number} [days=7] - The number of days to get analytics for.
+   * @returns {Promise<AdminAnalytics>} The admin analytics data.
+   */
   async getAdminAnalytics(admin_id: number, days: number = 7): Promise<AdminAnalytics> {
      const response = await api.get<AdminAnalytics>("/admin/analytics", {
          params: { admin_id, days }
@@ -155,6 +234,12 @@ export const VoiceService = {
      return response.data;
   },
 
+  /**
+   * Blocks a user.
+   * @param {number} admin_id - The ID of the admin performing the action.
+   * @param {number} target_user_id - The ID of the user to block.
+   * @returns {Promise<any>} The response from the server.
+   */
   async blockUser(admin_id: number, target_user_id: number) {
       const response = await api.post(`/admin/users/${target_user_id}/block`, null, {
           params: { admin_id }
@@ -162,6 +247,14 @@ export const VoiceService = {
       return response.data;
   },
 
+  /**
+   * Uploads a new task.
+   * @param {string} adminName - The name of the admin uploading the task.
+   * @param {string} word - The word for the new task.
+   * @param {File} file - The audio file for the task.
+   * @param {number} adminId - The ID of the admin.
+   * @returns {Promise<any>} The response from the server.
+   */
   async uploadTask(adminName: string, word: string, file: File, adminId: number) {
     const formData = new FormData();
     formData.append('admin_id', adminId.toString());
@@ -174,6 +267,12 @@ export const VoiceService = {
     return response.data;
   },
 
+  /**
+   * Approves an edit.
+   * @param {number} editId - The ID of the edit to approve.
+   * @param {number} adminId - The ID of the admin.
+   * @returns {Promise<any>} The response from the server.
+   */
   async approveEdit(editId: number, adminId: number) {
     const response = await api.put(`/admin/approve-edit/${editId}`, null, {
         params: { admin_id: adminId }
@@ -181,6 +280,12 @@ export const VoiceService = {
     return response.data;
   },
   
+  /**
+   * Updates an edit.
+   * @param {number} edit_id - The ID of the edit to update.
+   * @param {string} word - The new word for the edit.
+   * @returns {Promise<any>} The response from the server.
+   */
   async updateEdit(edit_id: number, word: string) {
       const response = await api.put(`/edits/${edit_id}`, { word_after_edit: word });
       return response.data;
@@ -190,6 +295,11 @@ export const VoiceService = {
   // Statistics & Leaderboard
   // -------------------------
 
+  /**
+   * Gets a user's statistics.
+   * @param {number} user_id - The ID of the user.
+   * @returns {Promise<UserStats>} The user's statistics.
+   */
   async getUserStats(user_id: number): Promise<UserStats> {
     const response = await api.get<UserStats>(`/users/stats/${user_id}`);
     const data = response.data;
@@ -203,6 +313,11 @@ export const VoiceService = {
     return data;
   },
   
+  /**
+   * Gets the leaderboard data.
+   * @param {number} user_id - The ID of the user.
+   * @returns {Promise<any>} The leaderboard data.
+   */
   async getLeaderboard(user_id: number) {
     // GET /users/leaderboard?user_id=...
     const response = await api.get<any>("/users/leaderboard", {
@@ -219,11 +334,20 @@ export const VoiceService = {
     return response.data;
   },
   
+  /**
+   * Legacy mapping for getUserEdits, now using getMyHistory.
+   * @param {number} user_id - The ID of the user.
+   * @returns {Promise<UserEdit[]>} A list of the user's edits.
+   */
   // Legacy mapping
   async getUserEdits(user_id: number) {
       return this.getMyHistory(user_id);
   },
 
+  /**
+   * Checks the health of the API.
+   * @returns {Promise<boolean>} True if the API is healthy, false otherwise.
+   */
   async checkHealth() {
     try {
       const response = await api.get("/docs", { timeout: 5000 }); 

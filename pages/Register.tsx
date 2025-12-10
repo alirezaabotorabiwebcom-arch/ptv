@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import VoiceService, { setApiUrl, getApiUrl, isMixedContentError } from '../services/api';
 import { Settings, Wifi, WifiOff, AlertCircle, ShieldAlert } from 'lucide-react';
 
+/**
+ * Register component for new user registration.
+ * @returns {JSX.Element} The register component.
+ */
 const Register: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');

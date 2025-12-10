@@ -5,6 +5,10 @@ import VoiceService, { setApiUrl, getApiUrl, isMixedContentError } from '../serv
 import { useTranslation } from 'react-i18next';
 import { Mic, Settings, Wifi, WifiOff, AlertCircle, ShieldAlert, Globe } from 'lucide-react';
 
+/**
+ * Login component for user and admin authentication.
+ * @returns {JSX.Element} The login component.
+ */
 const Login: React.FC = () => {
   const [clientId, setClientId] = useState('');
   const [password, setPassword] = useState('');
