@@ -1,4 +1,13 @@
 
+/**
+ * @file types.ts
+ * @description Custom types used throughout the application.
+ */
+
+/**
+ * @enum {string} VoiceFlag
+ * @description Represents the possible flags for a voice recording.
+ */
 export enum VoiceFlag {
   NONE = 'NONE',
   DISTORTED = 'DISTORTED',
@@ -6,6 +15,10 @@ export enum VoiceFlag {
   MULTISPEAKER = 'MULTISPEAKER'
 }
 
+/**
+ * @interface User
+ * @description Represents a user.
+ */
 export interface User {
   id: number;
   first_name: string;
@@ -14,6 +27,10 @@ export interface User {
   role?: 'USER' | 'ADMIN'; 
 }
 
+/**
+ * @interface VoiceTask
+ * @description Represents a voice task.
+ */
 export interface VoiceTask {
   id: number;
   admin_name?: string;
@@ -27,12 +44,20 @@ export interface VoiceTask {
   edits?: UserEdit[]; // For Admin Review
 }
 
+/**
+ * @interface TaskResponse
+ * @description Represents the response from the getNextTask API endpoint.
+ */
 export interface TaskResponse {
   status: 'success' | 'limit_reached' | 'no_tasks';
   message?: string;
   task?: VoiceTask;
 }
 
+/**
+ * @interface UserEdit
+ * @description Represents a user's edit of a voice task.
+ */
 export interface UserEdit {
   id: number;
   word_after_edit: string;
@@ -46,6 +71,10 @@ export interface UserEdit {
   task?: VoiceTask; 
 }
 
+/**
+ * @interface UserStats
+ * @description Represents a user's statistics.
+ */
 export interface UserStats {
   id: number;
   name: string;
@@ -57,12 +86,20 @@ export interface UserStats {
   daily_limit?: number; // New field for progress bar
 }
 
+/**
+ * @interface MyStats
+ * @description Represents a user's own statistics.
+ */
 export interface MyStats {
   total_done: number;
   corrections_received: number;
   final_score: number;
 }
 
+/**
+ * @interface LoginResponse
+ * @description Represents the response from the login API endpoint.
+ */
 export interface LoginResponse {
   message: string;
   user_id?: number; // Standard user ID
@@ -72,6 +109,10 @@ export interface LoginResponse {
   role: string; // 'ADMIN' | 'USER'
 }
 
+/**
+ * @interface CurrentUser
+ * @description Represents the currently logged in user.
+ */
 export interface CurrentUser {
   id: number;
   name: string;
@@ -79,11 +120,19 @@ export interface CurrentUser {
   role: string;
 }
 
+/**
+ * @interface LoginData
+ * @description Represents the data required for a login request.
+ */
 export interface LoginData {
   client_id: string;
   password: string;
 }
 
+/**
+ * @interface RegisterData
+ * @description Represents the data required for a registration request.
+ */
 export interface RegisterData {
   first_name: string;
   last_name: string;
@@ -91,6 +140,10 @@ export interface RegisterData {
   password: string;
 }
 
+/**
+ * @interface AdminAnalytics
+ * @description Represents the data returned from the admin analytics API endpoint.
+ */
 export interface AdminAnalytics {
   total_tasks_done: number;
   users_performance: {

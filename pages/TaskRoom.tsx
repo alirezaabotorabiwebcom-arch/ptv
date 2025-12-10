@@ -28,6 +28,11 @@ interface WordGroup {
   chars: CharData[];
 }
 
+/**
+ * @component TaskRoom
+ * @description The main task room where users listen to audio and edit text.
+ * @returns {JSX.Element} The rendered component.
+ */
 const TaskRoom: React.FC = () => {
   const [searchParams] = useSearchParams();
   const taskIdParam = searchParams.get('id');

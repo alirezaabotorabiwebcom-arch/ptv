@@ -2,6 +2,12 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 type Theme = 'light' | 'dark';
 
+/**
+ * @interface ThemeContextType
+ * @description Represents the shape of the theme context.
+ * @property {Theme} theme The current theme.
+ * @property {() => void} toggleTheme Toggles the theme.
+ */
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
@@ -9,6 +15,12 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+/**
+ * @component ThemeProvider
+ * @description Provides theme context to its children.
+ * @param {{ children: ReactNode }} props The component's props.
+ * @returns {JSX.Element} The rendered component.
+ */
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('vtg_theme');
@@ -22,6 +34,9 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     localStorage.setItem('vtg_theme', theme);
   }, [theme]);
 
+  /**
+   * Toggles the theme between light and dark.
+   */
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
@@ -33,6 +48,12 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   );
 };
 
+/**
+ * @hook useTheme
+ * @description A custom hook for accessing the theme context.
+ * @returns {ThemeContextType} The theme context.
+ * @throws {Error} If used outside of a ThemeProvider.
+ */
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {

@@ -10,6 +10,12 @@ import AdminPanel from './pages/AdminPanel';
 import Profile from './pages/Profile';
 import LeaderboardPage from './pages/LeaderboardPage';
 
+/**
+ * @component ProtectedRoute
+ * @description A route guard that redirects unauthenticated users to the login page.
+ * @param {{ children: React.ReactNode }} props The component's props.
+ * @returns {JSX.Element} The rendered component, or a redirect to the login page.
+ */
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
@@ -18,6 +24,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+/**
+ * @component AppRoutes
+ * @description The main routing component for the application.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AppRoutes = () => {
   return (
     <Routes>
@@ -42,6 +53,11 @@ const AppRoutes = () => {
   );
 };
 
+/**
+ * @component App
+ * @description The root component of the application.
+ * @returns {JSX.Element} The rendered component.
+ */
 const App: React.FC = () => {
   return (
     <ThemeProvider>

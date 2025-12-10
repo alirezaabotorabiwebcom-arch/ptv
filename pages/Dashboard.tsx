@@ -7,6 +7,11 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { Trophy, Activity, CheckCircle, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
+/**
+ * @component Dashboard
+ * @description The user dashboard, which displays stats, recent tasks, and a leaderboard preview.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Dashboard: React.FC = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
